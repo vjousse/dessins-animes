@@ -43,7 +43,7 @@ object ApplicationBuild extends Build with Resolvers with Dependencies {
     testOptions in Test += Tests.Argument("junitxml", "console")
   )
   val da = play.Project(appName, appVersion, appDependencies).settings(
-    // Add your own project settings here
+    scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
   )
 
   val cli = Project("cli", file("cli"), settings = buildSettings).settings(
