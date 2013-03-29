@@ -1,5 +1,12 @@
-@()
+@(das: List[da.models.Da])
 
 @main("Dessins-animes.com") {
-    Bienvenue sur dessins-animes.com
+<h1>Dessins-animes.com est de retour !</h1>
+<p><strong>@das.length</strong> dessins animés dans la base.</p>
+
+    <ul>
+        @for(da <- das) {
+        <li>@da</li>
+        }
+    </ul>
 }

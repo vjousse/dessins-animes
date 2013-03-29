@@ -3,13 +3,16 @@ package models
 
 import anorm._
 import anorm.SqlParser._
-import play.api.db.DB
 import java.sql.Connection
 import scala.language.postfixOps
 
 case class Da(
   id: Integer,
-  name: String)
+  name: String) {
+
+  override def toString = name
+
+  }
 
 object Da {
 
@@ -25,7 +28,7 @@ object Da {
           name)
     }
 
-    SQL("SELECT * FROM da").as(mapping *)
+    SQL("SELECT d.id,n.nom FROM da AS d, noms_da AS n WHERE d.id = n.id_da ORDER BY nom ASC").as(mapping *)
 
   }
 }

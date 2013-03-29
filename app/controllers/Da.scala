@@ -7,9 +7,9 @@ import play.api.db._
 
 import da.apis.DaApi
 
-object Application extends Controller {
+object Da extends Controller {
 
-  def index = Action {
+  def show(id: Long) = Action {
     DB.withConnection { implicit conn =>
       val das = DaApi.getAllDas()
       Ok(views.html.index(das))
