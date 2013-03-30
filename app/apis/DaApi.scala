@@ -9,4 +9,6 @@ object DaApi {
 
   def getAllDas()(implicit conn: Connection): List[Da] = Da.findAll()
 
+  def getDaById(id: Long)(implicit conn: Connection): Option[Da] = Da.findOneById(id)
+
 }

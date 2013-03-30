@@ -6,7 +6,7 @@
 
     <ul>
         @for(da <- das) {
-        <li>@da</li>
+        <li><a href="@routes.Da.show(da.id)">@da</a></li>
         }
     </ul>
 }

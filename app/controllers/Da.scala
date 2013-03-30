@@ -11,8 +11,10 @@ object Da extends Controller {
 
   def show(id: Long) = Action {
     DB.withConnection { implicit conn =>
-      val das = DaApi.getAllDas()
-      Ok(views.html.index(das))
+      DaApi.getDaById(id) match {
+        case Some(da) => Ok(views.html.showDa(da))
+        case None => NotFound
+      }
     }
   }
 
