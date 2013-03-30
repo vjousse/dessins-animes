@@ -8,11 +8,23 @@
         }
         @if(!theDa.summary.isEmpty) {
         <h2>Résumé</h2>
-        <p>@{Html(theDa.summary.map { _.replaceAll("\n", "<br/>")}.get)}</p>
+        <p>@{Html(theDa.summary.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
+            @if(!theDa.summary.get.author.isEmpty) {
+            <p class="author">par <strong>@theDa.summary.get.author.get</strong></p>
+            }
         }
         @if(!theDa.comment.isEmpty) {
         <h2>Commentaire</h2>
-        <p>@{Html(theDa.comment.map { _.replaceAll("\n", "<br/>")}.get)}</p>
+        <p>@{Html(theDa.comment.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
+            @if(!theDa.comment.get.author.isEmpty) {
+            <p class="author">par <strong>@theDa.comment.get.author.get</strong></p>
+            }
+        }
+        @if(theDa.images.length > 0) {
+        <h2>Images</h2>
+            @for(image <- theDa.images) {
+            <img src="@routes.ExternalAssets.at(theDa.dirName + "/images/" + image.name)" />
+            }
         }
     </article>
     <div id="back">
