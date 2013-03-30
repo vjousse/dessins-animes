@@ -9,14 +9,14 @@
         @if(!theDa.summary.isEmpty) {
         <h2>Résumé</h2>
         <p>@{Html(theDa.summary.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
-            @if(!theDa.summary.get.author.isEmpty && !theDa.summary.get.author == "") {
+            @if(!theDa.summary.get.author.isEmpty && theDa.summary.get.author.get != "") {
             <p class="author">par <strong>@theDa.summary.get.author.get</strong></p>
             }
         }
         @if(!theDa.comment.isEmpty) {
         <h2>Commentaire</h2>
         <p>@{Html(theDa.comment.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
-            @if(!theDa.comment.get.author.isEmpty && !theDa.comment.get.author == "") {
+            @if(!theDa.comment.get.author.isEmpty && theDa.comment.get.author.get != "") {
             <p class="author">par <strong>@theDa.comment.get.author.get</strong></p>
             }
         }
