@@ -1,6 +1,18 @@
 @(theDa: da.models.Da)
 
 @main(theDa.name) {
-    <h1>@theDa.name</h1>
-    <p>@theDa.text</p>
+    <article>
+        <h1>@theDa.name</h1>
+        @if(!theDa.summary.isEmpty) {
+        <h2>Résumé</h2>
+        <p>@{Html(theDa.summary.map { _.replaceAll("\n", "<br/>")}.get)}</p>
+        }
+        @if(!theDa.comment.isEmpty) {
+        <h2>Commentaire</h2>
+        <p>@{Html(theDa.comment.map { _.replaceAll("\n", "<br/>")}.get)}</p>
+        }
+    </article>
+    <div id="back">
+        <a href="@routes.Application.index">Revenir à la liste</a>
+    </div>
 }

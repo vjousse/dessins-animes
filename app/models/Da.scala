@@ -11,7 +11,8 @@ import da.util.SqlParser.optStr
 case class Da(
   id: Long,
   name: String,
-  text: Option[String] = None) {
+  summary: Option[String] = None,
+  comment: Option[String] = None) {
 
   override def toString = name
 
@@ -40,21 +41,15 @@ object Da {
 
     val parsing = int("id") ~
       str("nom") ~
-      optStr("texte")
+      optStr("texte") ~
+      optStr("type")
 
-    val mapping = parsing map {
-      case id ~ name ~ text ⇒
-        new Da(
-          id,
-          name,
-          text)
-    }
-
-    SQL("""
+    val results = SQL("""
       SELECT
         d.id,
         noms_da.nom,
-        textes_da.texte
+        textes_da.texte,
+        textes_da.type
       FROM
         da AS d
       LEFT JOIN
@@ -66,7 +61,14 @@ object Da {
       """)
 
       .on("id" -> id)
-      .as(mapping singleOpt)
+      .as(parsing map(flatten) *)
 
+    results.headOption.map { f =>
+      Da(
+        f._1,
+        f._2,
+        results.find(_._4 == Some("resume")).flatMap(_._3),
+        results.find(_._4 == Some("commentaire")).flatMap(_._3))
+    }
   }
 }
