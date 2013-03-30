@@ -11,6 +11,7 @@ import da.util.SqlParser.optStr
 case class Da(
   id: Long,
   name: String,
+  otherNames: List[String] = Nil,
   summary: Option[String] = None,
   comment: Option[String] = None) {
 
@@ -32,7 +33,7 @@ object Da {
           name)
     }
 
-    SQL("SELECT d.id,n.nom FROM da AS d, noms_da AS n WHERE d.id = n.id_da ORDER BY nom ASC").as(mapping *)
+    SQL("SELECT d.id,n.nom FROM da AS d, noms_da AS n WHERE d.id = n.id_da AND n.defaut = 1 ORDER BY nom ASC").as(mapping *)
 
   }
 
@@ -58,6 +59,8 @@ object Da {
         noms_da ON d.id = noms_da.id_da
       WHERE
         d.id = {id}
+      ORDER BY
+        noms_da.defaut DESC
       """)
 
       .on("id" -> id)
@@ -67,6 +70,7 @@ object Da {
       Da(
         f._1,
         f._2,
+        results.filterNot(_._2 == f._2).map(_._2),
         results.find(_._4 == Some("resume")).flatMap(_._3),
         results.find(_._4 == Some("commentaire")).flatMap(_._3))
     }

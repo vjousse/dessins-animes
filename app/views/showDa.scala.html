@@ -3,6 +3,9 @@
 @main(theDa.name) {
     <article>
         <h1>@theDa.name</h1>
+        @if(theDa.otherNames.length > 0) {
+        <p><strong>Autres noms : </strong>@theDa.otherNames.mkString(",")</p>
+        }
         @if(!theDa.summary.isEmpty) {
         <h2>Résumé</h2>
         <p>@{Html(theDa.summary.map { _.replaceAll("\n", "<br/>")}.get)}</p>
