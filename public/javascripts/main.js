@@ -1,1 +1,1 @@
-
+$('#gallery').photobox('a');

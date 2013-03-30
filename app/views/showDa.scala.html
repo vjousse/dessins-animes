@@ -22,9 +22,14 @@
         }
         @if(theDa.images.length > 0) {
         <h2>Images</h2>
+        <div id="gallery">
+        <!-- To use http://dropthebit.com/500/photobox-css3-image-gallery-jquery-plugin/ -->
             @for(image <- theDa.images) {
-            <img src="@routes.ExternalAssets.at(theDa.dirName + "/images/" + image.name)" />
+            <a href="@routes.ExternalAssets.at(theDa.dirName + "/images/" + image.name)">
+                <img src="@routes.ExternalAssets.at(theDa.dirName + "/images/thumb/" + image.thumbName)" alt="@image.name"/>
+            </a>
             }
+        </div>
         }
     </article>
     <div id="back">
