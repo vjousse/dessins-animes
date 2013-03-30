@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /das/:id                    controllers.Da.show(id: Long)
+GET     /das/:id/name/:dir               controllers.Da.show(id: Long, dir: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
