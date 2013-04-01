@@ -95,21 +95,95 @@ textarea {
 
 h1 {
   font: 400 95px/1.1 'Rancho', Georgia, serif;
+  color: #1B77A8;
+  font-size: 3.5em;
 }
 
 body {
   font: 400 17px/1.6 'Gudea', Verdana, Helvetica, sans-serif;
+  position: relative;
+  background-image:url(../images/body_background.png);
+  color: #616161;
 }
 
-#content {
-    margin: 0 10%;
+a {
+    color: #497287;
+}
+
+a:hover {
+    color: #798ea4;
+}
+
+header {
+    height: 128px;
+    background-image:url(../images/top_background.png);
+    position: relative;
+    overflow-x: hidden;
+}
+
+#clouds {
+    margin-right: auto;
+    margin-left: auto;
+    width: 1058px;
+    height: 128px;
+    position: relative;
+    overflow: hidden;
+}
+
+#bottom-clouds {
+    background-image:url(../images/clouds.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    width: 1058px;
+    height: 128px;
+    position: relative;
+    left: 2px;
+    z-index: 2;
+}
+
+#top-clouds {
+    background-image:url(../images/top_clouds.png);
+    background-position: right top;
+    width: 624px;
+    height: 59px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+#logo {
+    background-image:url(../images/logo.png);
+    width: 268px;
+    height: 65px;
+    position: absolute;
+    top: 0px;
+    left: 30px;
+    z-index: 3;
+}
+
+#logo a {
+    width: 268px;
+    height: 65px;
+    display: block;
+    text-indent: -9999px;
+}
+
+#robot {
+    background-image:url(../images/robot.png);
+    width: 90px;
+    height: 71px;
+    position: absolute;
+    bottom: 0px;
+    right: 65px;
+    z-index: 1;
 }
 
 #back {
     font-weight: bold;
-    text-align: center;
+    text-align: left;
     padding-top: 50px;
     padding-bottom: 50px;
+    text-align: right;
 }
 
 .author {
