@@ -149,6 +149,24 @@ header {
     position: absolute;
     top: 0px;
     right: 0px;
+    z-index:5;
+
+    /*general version*/
+    transition: all 5s;
+    /*browser specific versions*/
+    -moz-transition: all 5s;
+    -ms-transition: all 5s;
+    -webkit-transition: all 5s;
+    -o-transition: all 5s;
+}
+
+
+#top-clouds:hover {
+    transform:translateX(-100px);
+    -moz-transform:translateX(-100px);
+    -ms-transform:translateX(-100px);
+    -webkit-transform:translateX(-100px);
+    -o-transform:translateX(-100px);
 }
 
 #logo {
@@ -156,9 +174,16 @@ header {
     width: 268px;
     height: 65px;
     position: absolute;
-    top: 0px;
+    top: -2px;
     left: 30px;
     z-index: 3;
+    /*general version*/
+    transition: all 1s;
+    /*browser specific versions*/
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -webkit-transition: all 1s;
+    -o-transition: all 1s;
 }
 
 #logo a {
@@ -166,6 +191,11 @@ header {
     height: 65px;
     display: block;
     text-indent: -9999px;
+}
+
+#logo:hover {
+    /*Firefox*/
+    -moz-transform:rotate(2deg);
 }
 
 #robot {
@@ -177,6 +207,7 @@ header {
     right: 65px;
     z-index: 1;
 }
+
 
 #back {
     font-weight: bold;
