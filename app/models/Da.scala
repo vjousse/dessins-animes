@@ -111,7 +111,7 @@ object Da {
               thumb <- r._10
               big <- r._11
             } yield Image(id, big, thumb)
-          )
+          ).distinct
       )
     }
   }
