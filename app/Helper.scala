@@ -19,4 +19,11 @@ object Helper {
 
   def showDateTime(date: DateTime): String = DateTimeFormat.forPattern("dd MMMM yyy h:m").withLocale(Locale.FRANCE).print(date)
 
+  def showIfNotEmpty(prefix: String, value: Option[String]): String = {
+   if(!value.isEmpty && value.get != "") {
+    prefix + value.get
+   } else {
+    ""
+   }
+  }
 }

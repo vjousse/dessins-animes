@@ -16,7 +16,9 @@ case class Da(
   otherNames: List[String] = Nil,
   summary: Option[Text] = None,
   comment: Option[Text] = None,
-  images: List[Image] = Nil) {
+  images: List[Image] = Nil,
+  guide: Option[Guide] = None
+  ) {
 
   override def toString = name
 
@@ -36,7 +38,10 @@ object Da {
       textUpdatedAt: Option[DateTime],
       imageId: Option[Long],
       imageThumbName: Option[String],
-      imageName: Option[String])
+      imageName: Option[String],
+      guideId: Option[Long],
+      guideFrom: Option[String],
+      guideList: Option[String])
 
   def findAll()(implicit conn: Connection): List[Da] = {
 
@@ -70,8 +75,11 @@ object Da {
       optDateTime("textes_da.updated_at") ~
       optLong("image_id") ~
       optStr("nomthumb") ~
-      optStr("nombig") map {
-        case id ~ directory ~ name ~ text_id ~ text ~ text_type ~ text_author ~ text_mail ~ text_updated_at ~ image_id ~ image_thumb_name ~ image_name =>
+      optStr("nombig") ~
+      optLong("guide_id") ~
+      optStr("guide_from") ~
+      optStr("guide_list") map {
+        case id ~ directory ~ name ~ text_id ~ text ~ text_type ~ text_author ~ text_mail ~ text_updated_at ~ image_id ~ image_thumb_name ~ image_name ~ guide_id ~ guide_from ~ guide_list =>
           SingleRow(
             id,
             directory,
@@ -84,7 +92,11 @@ object Da {
             text_updated_at,
             image_id,
             image_thumb_name,
-            image_name )
+            image_name,
+            guide_id,
+            guide_from,
+            guide_list
+          )
       }
 
     val results = SQL("""
@@ -100,7 +112,10 @@ object Da {
         textes_da.updated_at,
         images_da.id as image_id,
         images_da.nomthumb,
-        images_da.nombig
+        images_da.nombig,
+        guide.id_guide as guide_id,
+        guide.provenance as guide_from,
+        guide.liste as guide_list
       FROM
         da AS d
       LEFT JOIN
@@ -109,6 +124,8 @@ object Da {
         noms_da ON d.id = noms_da.id_da
       LEFT JOIN
         images_da ON d.id = images_da.id_da
+      LEFT JOIN
+        guide ON d.id = guide.id_da
       WHERE
         d.id = {id}
       ORDER BY
@@ -143,7 +160,14 @@ object Da {
               thumb <- r.imageThumbName
               big <- r.imageName
             } yield Image(id, big, thumb)
-          ).distinct
+          ).distinct,
+
+        results.find(!_.guideId.isEmpty).flatMap( r =>
+            for {
+              id <- r.guideId
+              list <- r.guideList
+            } yield Guide(id, r.guideFrom, list)
+          )
       )
     }
   }

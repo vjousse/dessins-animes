@@ -13,7 +13,7 @@
         <p>@{Html(theDa.summary.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
             @if(!theDa.summary.get.author.isEmpty && theDa.summary.get.author.get != "") {
             <p class="author">par <strong>@theDa.summary.get.author.get</strong>
-                @if(!theDa.summary.get.updatedAt.isEmpty && theDa.summary.get.updatedAt.get != "") {
+                @if(!theDa.summary.get.updatedAt.isEmpty) {
                     le @show(theDa.summary.get.updatedAt.get)</p>
                 }
             }
@@ -23,7 +23,7 @@
         <p>@{Html(theDa.comment.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
             @if(!theDa.comment.get.author.isEmpty && theDa.comment.get.author.get != "") {
             <p class="author">par <strong>@theDa.comment.get.author.get</strong>
-                @if(!theDa.comment.get.updatedAt.isEmpty && theDa.comment.get.updatedAt.get != "") {
+                @if(!theDa.comment.get.updatedAt.isEmpty) {
                     le @show(theDa.comment.get.updatedAt.get)</p>
                 }
             }
@@ -31,7 +31,6 @@
         @if(theDa.images.length > 0) {
         <h2>Images</h2>
         <div id="gallery">
-        <!-- To use http://dropthebit.com/500/photobox-css3-image-gallery-jquery-plugin/ -->
             @for(image <- theDa.images) {
             <a href="@routes.ExternalAssets.at(theDa.dirName + "/images/" + image.name)">
                 <img src="@routes.ExternalAssets.at(theDa.dirName + "/images/thumb/" + image.thumbName)" alt="@image.name"/>
@@ -39,6 +38,12 @@
             }
         </div>
         }
+        @if(!theDa.guide.isEmpty) {
+        <h2>Guide des épisodes</h2>
+        <pre>@theDa.guide.get.list</pre>
+            @Html(showIfNotEmpty("<strong>Provenance : </strong>", theDa.guide.get.from))
+        }
+
     </article>
     <div id="back">
         <a href="@routes.Application.index">Revenir à la liste »</a>
