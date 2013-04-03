@@ -5,8 +5,9 @@ import anorm._
 import anorm.SqlParser._
 import java.sql.Connection
 import scala.language.postfixOps
+import org.joda.time.DateTime
 
-import da.util.SqlParser.{optStr, optLong}
+import da.util.SqlParser.{optStr, optLong, optDateTime}
 
 case class Da(
   id: Long,
@@ -22,6 +23,20 @@ case class Da(
   }
 
 object Da {
+
+  case class SingleRow(
+      id: Long,
+      directory: String,
+      name: String,
+      textId: Option[Long],
+      text: Option[String],
+      textType: Option[String],
+      textAuthor: Option[String],
+      textMail: Option[String],
+      textUpdatedAt: Option[DateTime],
+      imageId: Option[Long],
+      imageThumbName: Option[String],
+      imageName: Option[String])
 
   def findAll()(implicit conn: Connection): List[Da] = {
 
@@ -44,17 +59,33 @@ object Da {
 
   def findOneById(id: Long)(implicit conn: Connection): Option[Da] = {
 
-    val parsing = int("id") ~ // 1
-      str("repertoire") ~     // 2
-      str("nom") ~            // 3
-      optLong("texte_id") ~   // 4
-      optStr("texte") ~       // 5
-      optStr("type") ~        // 6
-      optStr("auteur") ~      // 7
-      optStr("mail") ~        // 8
-      optLong("image_id") ~   // 9
-      optStr("nomthumb") ~    // 10
-      optStr("nombig")        // 11
+    val parsing = int("id") ~
+      str("repertoire") ~
+      str("nom") ~
+      optLong("texte_id") ~
+      optStr("texte") ~
+      optStr("type") ~
+      optStr("auteur") ~
+      optStr("mail") ~
+      optDateTime("textes_da.updated_at") ~
+      optLong("image_id") ~
+      optStr("nomthumb") ~
+      optStr("nombig") map {
+        case id ~ directory ~ name ~ text_id ~ text ~ text_type ~ text_author ~ text_mail ~ text_updated_at ~ image_id ~ image_thumb_name ~ image_name =>
+          SingleRow(
+            id,
+            directory,
+            name,
+            text_id,
+            text,
+            text_type,
+            text_author,
+            text_mail,
+            text_updated_at,
+            image_id,
+            image_thumb_name,
+            image_name )
+      }
 
     val results = SQL("""
       SELECT
@@ -66,6 +97,7 @@ object Da {
         textes_da.type,
         textes_da.auteur,
         textes_da.mail,
+        textes_da.updated_at,
         images_da.id as image_id,
         images_da.nomthumb,
         images_da.nombig
@@ -84,32 +116,32 @@ object Da {
       """)
 
       .on("id" -> id)
-      .as(parsing map(flatten) *)
+      .as(parsing *)
 
-    results.headOption.map { f =>
+    results.headOption.map { r =>
       Da(
-        f._1,
-        f._2,
-        f._3,
-        results.filterNot(_._3 == f._3).map(_._3),
-        results.find(_._6 == Some("resume")).flatMap( r =>
+        r.id,
+        r.directory,
+        r.name,
+        results.filterNot(_.name == r.name).map(_.name),
+        results.find(_.textType == Some("resume")).flatMap( f =>
             for {
-              id <- r._4
-              text <- r._5
-            } yield Text(id, text, r._7, r._8)
+              id <- f.textId
+              text <- f.text
+            } yield Text(id, text, f.textAuthor, f.textMail)
+          ),
+        results.find(_.textType == Some("commentaire")).flatMap( f =>
+            for {
+              id <- f.textId
+              text <- f.text
+            } yield Text(id, text, f.textAuthor, f.textMail)
           ),
 
-        results.find(_._6 == Some("commentaire")).flatMap( r =>
+        results.filterNot(_.imageId.isEmpty).flatMap( r =>
             for {
-              id <- r._4
-              text <- r._5
-            } yield Text(id, text, r._7, r._8)
-          ),
-        results.filterNot(_._9.isEmpty).flatMap( r =>
-            for {
-              id <- r._9
-              thumb <- r._10
-              big <- r._11
+              id <- r.imageId
+              thumb <- r.imageThumbName
+              big <- r.imageName
             } yield Image(id, big, thumb)
           ).distinct
       )
