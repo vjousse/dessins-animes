@@ -1,5 +1,7 @@
 @(theDa: da.models.Da)
 
+@import da.Helper._
+
 @main(theDa.name) {
     <article>
         <h1>@theDa.name</h1>
@@ -10,14 +12,20 @@
         <h2>Résumé</h2>
         <p>@{Html(theDa.summary.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
             @if(!theDa.summary.get.author.isEmpty && theDa.summary.get.author.get != "") {
-            <p class="author">par <strong>@theDa.summary.get.author.get</strong></p>
+            <p class="author">par <strong>@theDa.summary.get.author.get</strong>
+                @if(!theDa.summary.get.updatedAt.isEmpty && theDa.summary.get.updatedAt.get != "") {
+                    le @show(theDa.summary.get.updatedAt.get)</p>
+                }
             }
         }
         @if(!theDa.comment.isEmpty) {
         <h2>Commentaire</h2>
         <p>@{Html(theDa.comment.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
             @if(!theDa.comment.get.author.isEmpty && theDa.comment.get.author.get != "") {
-            <p class="author">par <strong>@theDa.comment.get.author.get</strong></p>
+            <p class="author">par <strong>@theDa.comment.get.author.get</strong>
+                @if(!theDa.comment.get.updatedAt.isEmpty && theDa.comment.get.updatedAt.get != "") {
+                    le @show(theDa.comment.get.updatedAt.get)</p>
+                }
             }
         }
         @if(theDa.images.length > 0) {

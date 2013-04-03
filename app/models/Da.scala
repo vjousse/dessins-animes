@@ -128,13 +128,13 @@ object Da {
             for {
               id <- f.textId
               text <- f.text
-            } yield Text(id, text, f.textAuthor, f.textMail)
+            } yield Text(id, text, f.textAuthor, f.textMail, f.textUpdatedAt)
           ),
         results.find(_.textType == Some("commentaire")).flatMap( f =>
             for {
               id <- f.textId
               text <- f.text
-            } yield Text(id, text, f.textAuthor, f.textMail)
+            } yield Text(id, text, f.textAuthor, f.textMail, f.textUpdatedAt)
           ),
 
         results.filterNot(_.imageId.isEmpty).flatMap( r =>
