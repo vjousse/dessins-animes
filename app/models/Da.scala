@@ -17,7 +17,8 @@ case class Da(
   summary: Option[Text] = None,
   comment: Option[Text] = None,
   images: List[Image] = Nil,
-  guide: Option[Guide] = None
+  guide: Option[Guide] = None,
+  songs: List[Song] = Nil
   ) {
 
   override def toString = name
@@ -41,7 +42,12 @@ object Da {
       imageName: Option[String],
       guideId: Option[Long],
       guideFrom: Option[String],
-      guideList: Option[String])
+      guideList: Option[String],
+      songId: Option[Long],
+      songFrom: Option[String],
+      songName: Option[String],
+      songText: Option[String])
+
 
   def findAll()(implicit conn: Connection): List[Da] = {
 
@@ -78,8 +84,13 @@ object Da {
       optStr("nombig") ~
       optLong("guide_id") ~
       optStr("guide_from") ~
-      optStr("guide_list") map {
-        case id ~ directory ~ name ~ text_id ~ text ~ text_type ~ text_author ~ text_mail ~ text_updated_at ~ image_id ~ image_thumb_name ~ image_name ~ guide_id ~ guide_from ~ guide_list =>
+      optStr("guide_list") ~
+      optLong("song_id") ~
+      optStr("song_from") ~
+      optStr("song_name") ~
+      optStr("song_text") map {
+
+        case id ~ directory ~ name ~ text_id ~ text ~ text_type ~ text_author ~ text_mail ~ text_updated_at ~ image_id ~ image_thumb_name ~ image_name ~ guide_id ~ guide_from ~ guide_list ~ song_id ~ song_from ~ song_name ~ song_text =>
           SingleRow(
             id,
             directory,
@@ -95,7 +106,11 @@ object Da {
             image_name,
             guide_id,
             guide_from,
-            guide_list
+            guide_list,
+            song_id,
+            song_from,
+            song_name,
+            song_text
           )
       }
 
@@ -115,7 +130,11 @@ object Da {
         images_da.nombig,
         guide.id_guide as guide_id,
         guide.provenance as guide_from,
-        guide.liste as guide_list
+        guide.liste as guide_list,
+        parole.id_parole as song_id,
+        parole.provenance as song_from,
+        parole.nom as song_name,
+        parole.parole as song_text
       FROM
         da AS d
       LEFT JOIN
@@ -126,6 +145,8 @@ object Da {
         images_da ON d.id = images_da.id_da
       LEFT JOIN
         guide ON d.id = guide.id_da
+      LEFT JOIN
+        parole ON d.id = parole.id_da
       WHERE
         d.id = {id}
       ORDER BY
@@ -167,7 +188,15 @@ object Da {
               id <- r.guideId
               list <- r.guideList
             } yield Guide(id, r.guideFrom, list)
-          )
+          ),
+
+        results.filterNot(_.songId.isEmpty).flatMap( r =>
+            for {
+              id <- r.songId
+              name <- r.songName
+              text <- r.songText
+            } yield Song(id, r.songFrom, name, text)
+          ).distinct
       )
     }
   }

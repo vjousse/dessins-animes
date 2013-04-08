@@ -43,9 +43,17 @@
         <pre>@theDa.guide.get.list</pre>
             @Html(showIfNotEmpty("<strong>Provenance : </strong>", theDa.guide.get.from))
         }
+        @if(theDa.songs.length > 0) {
+        <h2>Paroles des génériques</h2>
+        @for(song <- theDa.songs) {
+            <h3>@song.name</h3>
+            <pre>@song.text</pre>
+            @Html(showIfNotEmpty("<strong>Provenance : </strong>", song.from))
+        }
+    }
 
-    </article>
-    <div id="back">
-        <a href="@routes.Application.index">Revenir à la liste »</a>
-    </div>
+</article>
+<div id="back">
+    <a href="@routes.Application.index">Revenir à la liste »</a>
+</div>
 }
