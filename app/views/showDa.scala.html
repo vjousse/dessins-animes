@@ -3,67 +3,96 @@
 @import da.Helper._
 
 @main(theDa.name) {
-    <article>
-        <h1>@theDa.name</h1>
-        @if(theDa.otherNames.length > 0) {
-        <p><strong>Autres noms : </strong>@theDa.otherNames.mkString(",")</p>
-        }
-        @if(!theDa.summary.isEmpty) {
-        <h2 id="summary">Résumé</h2>
-        <p>@{Html(theDa.summary.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
-            @if(!theDa.summary.get.author.isEmpty && theDa.summary.get.author.get != "") {
-            <p class="author">par <strong>@theDa.summary.get.author.get</strong>
-                @if(!theDa.summary.get.updatedAt.isEmpty) {
-                    le @show(theDa.summary.get.updatedAt.get)</p>
+
+<div class="container_12">
+    <div class="grid_12">
+        <article>
+            <h1>@theDa.name</h1>
+            @if(theDa.otherNames.length > 0) {
+            <p><strong>Autres noms : </strong>@theDa.otherNames.mkString(",")</p>
+            }
+            @if(!theDa.summary.isEmpty) {
+            <h2 id="summary">Résumé</h2>
+            <p>@{Html(theDa.summary.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
+                @if(!theDa.summary.get.author.isEmpty && theDa.summary.get.author.get != "") {
+                <p class="author">par <strong>@theDa.summary.get.author.get</strong>
+                    @if(!theDa.summary.get.updatedAt.isEmpty) {
+                        le @show(theDa.summary.get.updatedAt.get)</p>
+                    }
                 }
             }
-        }
-        @if(!theDa.comment.isEmpty) {
-        <h2 id="about">Commentaire</h2>
-        <p>@{Html(theDa.comment.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
-            @if(!theDa.comment.get.author.isEmpty && theDa.comment.get.author.get != "") {
-            <p class="author">par <strong>@theDa.comment.get.author.get</strong>
-                @if(!theDa.comment.get.updatedAt.isEmpty) {
-                    le @show(theDa.comment.get.updatedAt.get)</p>
+            @if(!theDa.comment.isEmpty) {
+            <h2 id="about">Commentaire</h2>
+            <p>@{Html(theDa.comment.map { _.content.replaceAll("\n", "<br/>")}.get)}</p>
+                @if(!theDa.comment.get.author.isEmpty && theDa.comment.get.author.get != "") {
+                <p class="author">par <strong>@theDa.comment.get.author.get</strong>
+                    @if(!theDa.comment.get.updatedAt.isEmpty) {
+                        le @show(theDa.comment.get.updatedAt.get)</p>
+                    }
                 }
             }
-        }
-        @if(theDa.images.length > 0) {
-        <h2 id="images">Images</h2>
-        <div id="gallery">
-            @for(image <- theDa.images) {
-            <a href="@routes.ExternalAssets.at(theDa.dirName + "/images/" + image.name)">
-                <img src="@routes.ExternalAssets.at(theDa.dirName + "/images/thumb/" + image.thumbName)" alt="@image.name"/>
-            </a>
-            }
+            @if(theDa.images.length > 0) {
+
+    </div>
+</div>
+<div id="images_bg">
+<div class="container_12">
+    <div class="grid_12">
+
+            <h2 id="images">Images</h2>
+            <div id="gallery">
+                @for(image <- theDa.images) {
+                <a href="@routes.ExternalAssets.at(theDa.dirName + "/images/" + image.name)">
+                    <img src="@routes.ExternalAssets.at(theDa.dirName + "/images/thumb/" + image.thumbName)" alt="@image.name"/>
+                </a>
+                }
+            </div>
+
         </div>
-        }
-        @if(!theDa.guide.isEmpty) {
-        <h2>Guide des épisodes</h2>
-        <pre>@theDa.guide.get.list</pre>
-            @Html(showIfNotEmpty("<strong>Provenance : </strong>", theDa.guide.get.from))
-        }
-        @if(theDa.songs.length > 0) {
 
-        <h2>Paroles des génériques</h2>
-        @for(song <- theDa.songs) {
-            <h3>@song.name</h3>
-            <pre>@song.text</pre>
-            @Html(showIfNotEmpty("<strong>Provenance : </strong>", song.from))
-        }
-
-        @if(theDa.links.length > 0) {
-            <h2>Liens en rapport</h2>
-            <ul>
-            @for(link <- theDa.links) {
-            <li><a href="@link.url">@link.name</a> <img src="@routes.Assets.at("images/flags/flag_" + link.language + ".gif")" /></li>
+    </div>
+</div>
+<div class="container_12">
+    <div class="grid_12">
             }
-            </ul>
-        }
-    }
+            @if(!theDa.guide.isEmpty) {
+                <h2>Guide des épisodes</h2>
+            <div id="guide" class="white-box">
+                <div class="inner">
+                <pre>@theDa.guide.get.list</pre>
+                    @Html(showIfNotEmpty("<strong>Provenance : </strong>", theDa.guide.get.from))
+                }
+                </div>
+            </div>
+            @if(theDa.songs.length > 0) {
 
-</article>
-<div id="back">
-    <a href="@routes.Application.index">Revenir à la liste »</a>
+            <h2>Paroles des génériques</h2>
+            @for(song <- theDa.songs) {
+                <div id="song" class="white-box">
+                    <div class="inner">
+                        <h3>@song.name</h3>
+                        <pre>@song.text</pre>
+                        @Html(showIfNotEmpty("<strong>Provenance : </strong>", song.from))
+                    </div>
+                </div>
+            }
+
+            @if(theDa.links.length > 0) {
+                <h2>Liens en rapport</h2>
+                <ul>
+                @for(link <- theDa.links) {
+                <li><a href="@link.url">@link.name</a> <img src="@routes.Assets.at("images/flags/flag_" + link.language + ".gif")" /></li>
+                }
+                </ul>
+            }
+        }
+
+        </article>
+
+        <div id="back">
+            <a href="@routes.Application.index">Revenir à la liste »</a>
+        </div>
+
+    </div>
 </div>
 }

@@ -243,6 +243,54 @@ header {
     text-indent: -9999px;
 }
 
+#images_bg {
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    background-image:url(../images/blue_background.png);
+    padding-bottom: 30px;
+}
+
+
+footer {
+    background-image:url(../images/footer_background.png);
+    height: 57px;
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+}
+
+footer a {
+    color: white;
+}
+
+footer a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.white-box {
+    background-color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: -2px 2px 12px #aaa;
+    -moz-box-shadow: -2px 2px 12px #aaa;
+    -webkit-box-shadow: -2px 2px 12px #aaa;
+}
+
+.white-box .inner {
+    background-color: white;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-top: 1px solid #F2EEEF;
+    border-bottom: 1px solid #F2EEEF;
+}
+
+#guide strong, #song strong {
+    color: #1B77A8;
+}
+
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */

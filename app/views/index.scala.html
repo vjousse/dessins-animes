@@ -1,12 +1,17 @@
 @(das: List[da.models.Da])
 
 @main("L'encyclopédie des dessins animés") {
-<h1>Dessins-animes.com est de retour ! (enfin presque)</h1>
-<p><strong>@das.length</strong> dessins animés dans la base.</p>
 
-    <ul>
-        @for(da <- das) {
-        <li><a href="@routes.Da.show(da.id, da.dirName)">@da</a></li>
-        }
-    </ul>
+<div class="container_12">
+    <div class="grid_12">
+        <h1>Dessins-animes.com est de retour ! (enfin presque)</h1>
+        <p><strong>@das.length</strong> dessins animés dans la base.</p>
+
+        <ul>
+            @for(da <- das) {
+            <li><a href="@routes.Da.show(da.id, da.dirName)">@da</a></li>
+            }
+        </ul>
+    </div>
+</div>
 }
