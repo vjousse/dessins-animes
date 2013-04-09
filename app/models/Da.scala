@@ -42,10 +42,10 @@ object Da {
       textUpdatedAt: Option[DateTime])
 
   case class LinkRow(
-      linkId: Option[Long],
-      linkUrl: Option[String],
-      linkName: Option[String],
-      linkLanguage: Option[String])
+      id: Option[Long],
+      url: Option[String],
+      name: Option[String],
+      language: Option[String])
 
   case class SongRow(
       songId: Option[Long],
@@ -234,6 +234,15 @@ object Da {
               name <- r.songRow.songName
               text <- r.songRow.songText
             } yield Song(id, r.songRow.songFrom, name, text)
+          ).distinct,
+
+        results.filterNot(_.linkRow.id.isEmpty).flatMap( r =>
+            for {
+              id <- r.linkRow.id
+              url <- r.linkRow.url
+              name <- r.linkRow.name
+              language <- r.linkRow.language
+            } yield Link(id, url, name, language)
           ).distinct
       )
     }

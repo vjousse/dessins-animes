@@ -44,11 +44,21 @@
             @Html(showIfNotEmpty("<strong>Provenance : </strong>", theDa.guide.get.from))
         }
         @if(theDa.songs.length > 0) {
+
         <h2>Paroles des génériques</h2>
         @for(song <- theDa.songs) {
             <h3>@song.name</h3>
             <pre>@song.text</pre>
             @Html(showIfNotEmpty("<strong>Provenance : </strong>", song.from))
+        }
+
+        @if(theDa.links.length > 0) {
+            <h2>Sites de référence</h2>
+            <ul>
+            @for(link <- theDa.links) {
+            <li><a href="@link.url">@link.name</a> <img src="@routes.Assets.at("images/flags/flag_" + link.language + ".gif")" /></li>
+            }
+            </ul>
         }
     }
 
