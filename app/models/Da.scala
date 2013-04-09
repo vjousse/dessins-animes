@@ -18,7 +18,8 @@ case class Da(
   comment: Option[Text] = None,
   images: List[Image] = Nil,
   guide: Option[Guide] = None,
-  songs: List[Song] = Nil
+  songs: List[Song] = Nil,
+  links: List[Link] = Nil
   ) {
 
   override def toString = name
@@ -27,26 +28,48 @@ case class Da(
 
 object Da {
 
-  case class SingleRow(
+  case class DaRow(
       id: Long,
       directory: String,
-      name: String,
+      name: String)
+
+  case class TextRow(
       textId: Option[Long],
       text: Option[String],
       textType: Option[String],
       textAuthor: Option[String],
       textMail: Option[String],
-      textUpdatedAt: Option[DateTime],
-      imageId: Option[Long],
-      imageThumbName: Option[String],
-      imageName: Option[String],
-      guideId: Option[Long],
-      guideFrom: Option[String],
-      guideList: Option[String],
+      textUpdatedAt: Option[DateTime])
+
+  case class LinkRow(
+      linkId: Option[Long],
+      linkUrl: Option[String],
+      linkName: Option[String],
+      linkLanguage: Option[String])
+
+  case class SongRow(
       songId: Option[Long],
       songFrom: Option[String],
       songName: Option[String],
       songText: Option[String])
+
+  case class ImageRow(
+      imageId: Option[Long],
+      imageThumbName: Option[String],
+      imageName: Option[String])
+
+  case class GuideRow(
+      guideId: Option[Long],
+      guideFrom: Option[String],
+      guideList: Option[String])
+
+  case class SingleRow(
+      daRow: DaRow,
+      textRow: TextRow,
+      imageRow: ImageRow,
+      guideRow: GuideRow,
+      songRow: SongRow,
+      linkRow: LinkRow)
 
 
   def findAll()(implicit conn: Connection): List[Da] = {
@@ -88,29 +111,38 @@ object Da {
       optLong("song_id") ~
       optStr("song_from") ~
       optStr("song_name") ~
-      optStr("song_text") map {
+      optStr("song_text") ~
+      optLong("link_id") ~
+      optStr("link_url") ~
+      optStr("link_name") ~
+      optStr("link_language") map {
 
-        case id ~ directory ~ name ~ text_id ~ text ~ text_type ~ text_author ~ text_mail ~ text_updated_at ~ image_id ~ image_thumb_name ~ image_name ~ guide_id ~ guide_from ~ guide_list ~ song_id ~ song_from ~ song_name ~ song_text =>
+        case id ~ directory ~ name ~ text_id ~ text ~ text_type ~ text_author ~ text_mail ~ text_updated_at ~ image_id ~ image_thumb_name ~ image_name ~ guide_id ~ guide_from ~ guide_list ~ song_id ~ song_from ~ song_name ~ song_text ~ link_id ~ link_url ~ link_name ~ link_language =>
           SingleRow(
-            id,
-            directory,
-            name,
-            text_id,
-            text,
-            text_type,
-            text_author,
-            text_mail,
-            text_updated_at,
-            image_id,
-            image_thumb_name,
-            image_name,
-            guide_id,
-            guide_from,
-            guide_list,
-            song_id,
-            song_from,
-            song_name,
-            song_text
+            DaRow(id,
+              directory,
+              name),
+            TextRow(text_id,
+              text,
+              text_type,
+              text_author,
+              text_mail,
+              text_updated_at),
+            ImageRow(image_id,
+              image_thumb_name,
+              image_name),
+            GuideRow(guide_id,
+              guide_from,
+              guide_list),
+            SongRow(song_id,
+              song_from,
+              song_name,
+              song_text),
+            LinkRow(
+              link_id,
+              link_url,
+              link_name,
+              link_language)
           )
       }
 
@@ -134,7 +166,11 @@ object Da {
         parole.id_parole as song_id,
         parole.provenance as song_from,
         parole.nom as song_name,
-        parole.parole as song_text
+        parole.parole as song_text,
+        liens.id_liens as link_id,
+        liens.lien as link_url,
+        liens.nom_site as link_name,
+        liens.langage as link_language
       FROM
         da AS d
       LEFT JOIN
@@ -147,6 +183,8 @@ object Da {
         guide ON d.id = guide.id_da
       LEFT JOIN
         parole ON d.id = parole.id_da
+      LEFT JOIN
+        liens ON d.id = liens.id_da
       WHERE
         d.id = {id}
       ORDER BY
@@ -158,44 +196,44 @@ object Da {
 
     results.headOption.map { r =>
       Da(
-        r.id,
-        r.directory,
-        r.name,
-        results.filterNot(_.name == r.name).map(_.name),
-        results.find(_.textType == Some("resume")).flatMap( f =>
+        r.daRow.id,
+        r.daRow.directory,
+        r.daRow.name,
+        results.filterNot(_.daRow.name == r.daRow.name).map(_.daRow.name),
+        results.find(_.textRow.textType == Some("resume")).flatMap( f =>
             for {
-              id <- f.textId
-              text <- f.text
-            } yield Text(id, text, f.textAuthor, f.textMail, f.textUpdatedAt)
+              id <- f.textRow.textId
+              text <- f.textRow.text
+            } yield Text(id, text, f.textRow.textAuthor, f.textRow.textMail, f.textRow.textUpdatedAt)
           ),
-        results.find(_.textType == Some("commentaire")).flatMap( f =>
+        results.find(_.textRow.textType == Some("commentaire")).flatMap( f =>
             for {
-              id <- f.textId
-              text <- f.text
-            } yield Text(id, text, f.textAuthor, f.textMail, f.textUpdatedAt)
+              id <- f.textRow.textId
+              text <- f.textRow.text
+            } yield Text(id, text, f.textRow.textAuthor, f.textRow.textMail, f.textRow.textUpdatedAt)
           ),
 
-        results.filterNot(_.imageId.isEmpty).flatMap( r =>
+        results.filterNot(_.imageRow.imageId.isEmpty).flatMap( r =>
             for {
-              id <- r.imageId
-              thumb <- r.imageThumbName
-              big <- r.imageName
+              id <- r.imageRow.imageId
+              thumb <- r.imageRow.imageThumbName
+              big <- r.imageRow.imageName
             } yield Image(id, big, thumb)
           ).distinct,
 
-        results.find(!_.guideId.isEmpty).flatMap( r =>
+        results.find(!_.guideRow.guideId.isEmpty).flatMap( r =>
             for {
-              id <- r.guideId
-              list <- r.guideList
-            } yield Guide(id, r.guideFrom, list)
+              id <- r.guideRow.guideId
+              list <- r.guideRow.guideList
+            } yield Guide(id, r.guideRow.guideFrom, list)
           ),
 
-        results.filterNot(_.songId.isEmpty).flatMap( r =>
+        results.filterNot(_.songRow.songId.isEmpty).flatMap( r =>
             for {
-              id <- r.songId
-              name <- r.songName
-              text <- r.songText
-            } yield Song(id, r.songFrom, name, text)
+              id <- r.songRow.songId
+              name <- r.songRow.songName
+              text <- r.songRow.songText
+            } yield Song(id, r.songRow.songFrom, name, text)
           ).distinct
       )
     }
