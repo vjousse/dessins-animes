@@ -53,7 +53,7 @@
         }
 
         @if(theDa.links.length > 0) {
-            <h2>Sites de référence</h2>
+            <h2>Liens en rapport</h2>
             <ul>
             @for(link <- theDa.links) {
             <li><a href="@link.url">@link.name</a> <img src="@routes.Assets.at("images/flags/flag_" + link.language + ".gif")" /></li>
