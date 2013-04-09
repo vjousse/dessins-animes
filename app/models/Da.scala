@@ -34,12 +34,12 @@ object Da {
       name: String)
 
   case class TextRow(
-      textId: Option[Long],
+      id: Option[Long],
       text: Option[String],
       textType: Option[String],
-      textAuthor: Option[String],
-      textMail: Option[String],
-      textUpdatedAt: Option[DateTime])
+      author: Option[String],
+      mail: Option[String],
+      updatedAt: Option[DateTime])
 
   case class LinkRow(
       id: Option[Long],
@@ -48,20 +48,20 @@ object Da {
       language: Option[String])
 
   case class SongRow(
-      songId: Option[Long],
-      songFrom: Option[String],
-      songName: Option[String],
-      songText: Option[String])
+      id: Option[Long],
+      from: Option[String],
+      name: Option[String],
+      text: Option[String])
 
   case class ImageRow(
-      imageId: Option[Long],
-      imageThumbName: Option[String],
-      imageName: Option[String])
+      id: Option[Long],
+      thumbName: Option[String],
+      name: Option[String])
 
   case class GuideRow(
-      guideId: Option[Long],
-      guideFrom: Option[String],
-      guideList: Option[String])
+      id: Option[Long],
+      from: Option[String],
+      list: Option[String])
 
   case class SingleRow(
       daRow: DaRow,
@@ -202,38 +202,38 @@ object Da {
         results.filterNot(_.daRow.name == r.daRow.name).map(_.daRow.name),
         results.find(_.textRow.textType == Some("resume")).flatMap( f =>
             for {
-              id <- f.textRow.textId
+              id <- f.textRow.id
               text <- f.textRow.text
-            } yield Text(id, text, f.textRow.textAuthor, f.textRow.textMail, f.textRow.textUpdatedAt)
+            } yield Text(id, text, f.textRow.author, f.textRow.mail, f.textRow.updatedAt)
           ),
         results.find(_.textRow.textType == Some("commentaire")).flatMap( f =>
             for {
-              id <- f.textRow.textId
+              id <- f.textRow.id
               text <- f.textRow.text
-            } yield Text(id, text, f.textRow.textAuthor, f.textRow.textMail, f.textRow.textUpdatedAt)
+            } yield Text(id, text, f.textRow.author, f.textRow.mail, f.textRow.updatedAt)
           ),
 
-        results.filterNot(_.imageRow.imageId.isEmpty).flatMap( r =>
+        results.filterNot(_.imageRow.id.isEmpty).flatMap( r =>
             for {
-              id <- r.imageRow.imageId
-              thumb <- r.imageRow.imageThumbName
-              big <- r.imageRow.imageName
+              id <- r.imageRow.id
+              thumb <- r.imageRow.thumbName
+              big <- r.imageRow.name
             } yield Image(id, big, thumb)
           ).distinct,
 
-        results.find(!_.guideRow.guideId.isEmpty).flatMap( r =>
+        results.find(!_.guideRow.id.isEmpty).flatMap( r =>
             for {
-              id <- r.guideRow.guideId
-              list <- r.guideRow.guideList
-            } yield Guide(id, r.guideRow.guideFrom, list)
+              id <- r.guideRow.id
+              list <- r.guideRow.list
+            } yield Guide(id, r.guideRow.from, list)
           ),
 
-        results.filterNot(_.songRow.songId.isEmpty).flatMap( r =>
+        results.filterNot(_.songRow.id.isEmpty).flatMap( r =>
             for {
-              id <- r.songRow.songId
-              name <- r.songRow.songName
-              text <- r.songRow.songText
-            } yield Song(id, r.songRow.songFrom, name, text)
+              id <- r.songRow.id
+              name <- r.songRow.name
+              text <- r.songRow.text
+            } yield Song(id, r.songRow.from, name, text)
           ).distinct,
 
         results.filterNot(_.linkRow.id.isEmpty).flatMap( r =>
