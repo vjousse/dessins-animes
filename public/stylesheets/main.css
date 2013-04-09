@@ -222,6 +222,26 @@ header {
     font-style: italic;
 }
 
+#summary {
+    width: 108px;
+    height: 42px;
+    background-image: url('../images/summary.png');
+    text-indent: -9999px;
+}
+
+#about {
+    width: 116px;
+    height: 45px;
+    background-image: url('../images/about.png');
+    text-indent: -9999px;
+}
+
+#images {
+    width: 105px;
+    height: 42px;
+    background-image: url('../images/images.png');
+    text-indent: -9999px;
+}
 
 /* ==========================================================================
    Helper classes
