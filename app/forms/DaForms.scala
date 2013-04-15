@@ -6,8 +6,8 @@ import play.api.data.Forms._
 
 object DaForms {
 
-  val searchForm = Form(play.api.data.Forms.tuple(
+  val searchForm = Form(
       "search" -> text
-    ))
+    )
 
 }
