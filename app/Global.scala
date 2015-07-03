@@ -1,6 +1,7 @@
 import play.api._
 import play.api.mvc._
 import play.api.mvc.Results._
+import scala.concurrent.Future
 
 object Global extends GlobalSettings {
 
@@ -10,12 +11,16 @@ object Global extends GlobalSettings {
 
   // called when a route is found, but it was not possible to bind the request parameters
   override def onBadRequest(request: RequestHeader, error: String) = {
-    BadRequest("Bad Request: " + error)
+    Future.successful(
+      BadRequest("Bad Request: " + error)
+    )
   }
 
   // 404 - page not found error
-  override def onHandlerNotFound(request: RequestHeader): Result = {
-    NotFound(views.html.errors.onHandlerNotFound(request))
+  override def onHandlerNotFound(request: RequestHeader) = {
+    Future.successful(
+      NotFound(views.html.errors.onHandlerNotFound(request))
+    )
   }
 
 }

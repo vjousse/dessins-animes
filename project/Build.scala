@@ -1,6 +1,6 @@
 import sbt._
 import Keys._
-import play.Project._
+import play.Play.autoImport._
 
 trait Resolvers {
   val codahale = "repo.codahale.com" at "http://repo.codahale.com/"
@@ -22,7 +22,7 @@ object ApplicationBuild extends Build with Resolvers with Dependencies {
   val appDependencies = Seq(
     // Add your project dependencies here,
     jdbc,
-    anorm,
+    "com.typesafe.play" %% "anorm" % "2.4.0",
     "postgresql" % "postgresql" % "9.1-901.jdbc4"
   )
 
@@ -33,20 +33,25 @@ object ApplicationBuild extends Build with Resolvers with Dependencies {
     resolvers := Seq(),
     libraryDependencies := Seq(
       jdbc,
-      anorm,
+      "com.typesafe.play" %% "anorm" % "2.4.0",
       postgres),
     libraryDependencies in test := Seq(specs2),
     shellPrompt := {
       (state: State) ⇒ "%s> ".format(Project.extract(state).currentProject.id)
     },
-    scalacOptions := Seq("-deprecation", "-unchecked"),
+    scalacOptions := Seq("-deprecation", "-unchecked", "-feature"),
     testOptions in Test += Tests.Argument("junitxml", "console")
   )
-  val da = play.Project(appName, appVersion, appDependencies).settings(
+  val da = Project(appName, file("."))
+    .enablePlugins(play.PlayScala)
+    .settings(
+    libraryDependencies ++= appDependencies,
     scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
   )
 
   val cli = Project("cli", file("cli"), settings = buildSettings).settings(
-    libraryDependencies ++= Seq()
+    libraryDependencies ++= Seq(),
+    scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+
   ) dependsOn (da)
 }
